@@ -54,8 +54,8 @@ To install locally, you will need to first install [MuJoCo](https://www.roboti.u
    `export MUJOCO_KEY_PATH=$MUJOCO_KEY_PATH:~/.mujoco`  
    `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/.mujoco/mujoco200/bin`  
    `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/.mujoco/mjpro131/bin`  
-   `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH!:~/.mujoco/mjpro150/bin`  
-   `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH!:/usr/lib/nvidia`, (or you can find your version by running `nvidia-smi`)  
+   `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/.mujoco/mjpro150/bin`  
+   `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/nvidia`, (or you can find your version by running `nvidia-smi`)  
    in the end of this file, save and close the file.  
    execute the changes with `source ~/.bashrc`  
 
