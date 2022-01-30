@@ -35,28 +35,44 @@ The results for PEARL as well as all baselines on the six continuous control tas
 
 --------------------------------------
 
-#### Instructions (just a squeeze of lemon)
+## Instructions
 
+#### Clone this repo
 Clone this repo with `git clone --recurse-submodules`.
 
-To run in Docker, place your MuJoCo key in the `docker` directory, then run `docker build . -t pearl` within that directory to build the Docker image tagged with the name `pearl`.
-As an example, you can then run the container interactively with a bash shell with `docker run --rm --runtime=nvidia -it -v [PATH_TO_OYSTER]:/root/code pearl:latest /bin/bash`.
-The Dockerfile included in this repo includes GPU capability, so you must have a CUDA-10 capable GPU and drivers installed.
-Disclaimer: I am committed to making this Docker work, not to making it the most minimal required. If you have changes to pare it down such that everything still works, please make a pull request and I'm happy to merge it.
-
+#### Install Mujoco
 To install locally, you will need to first install [MuJoCo](https://www.roboti.us/index.html).
-For the task distributions in which the reward function varies (Cheetah, Ant, Humanoid), install MuJoCo200.
-Set `LD_LIBRARY_PATH` to point to both the MuJoCo binaries (`/$HOME/.mujoco/mujoco200/bin`) as well as the gpu drivers (something like `/usr/lib/nvidia-390`, you can find your version by running `nvidia-smi`).
-For the remaining dependencies, we recommend using [miniconda](https://docs.conda.io/en/latest/miniconda.html) - create our environment with `conda env create -f docker/environment.yml`
-This installation has been tested only on 64-bit Ubuntu 16.04.
+1. Go to the [MuJoCo](https://www.roboti.us/index.html) website and download MuJoco200, Mjpro131 and Mjpro150. Also, we can obtain a free license `mjkey.txt` here.
+2. Unzip the downloaded `mujoco200` directory into `~/.mujoco/mujoco200`, and place the license key `mjkey.txt` file at `~/.mujoco/` and `~/.mujoco/mujoco200/bin`.
+3. Mjpro131 and Mjpro150 can be installed in the same way as MuJoco200.
+4. Test the installation:   
+   `cd ~/.mujoco/mujoco200/bin`  
+   `./simulate ../model/humanoid.xml`
+5. Configure environment variables:  
+   open .bashrc file with `gedit ~/.bashrc`   
+   Add:  
+   `export MUJOCO_KEY_PATH=$MUJOCO_KEY_PATH:~/.mujoco`  
+   `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/.mujoco/mujoco200/bin`  
+   `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/.mujoco/mjpro131/bin`  
+   `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH!:~/.mujoco/mjpro150/bin`  
+   `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH!:/usr/lib/nvidia`, (or you can find your version by running `nvidia-smi`)  
+   in the end of this file, save and close the file.  
+   execute the changes with `source ~/.bashrc`  
 
-For the task distributions where different tasks correspond to different model parameters (Walker and Hopper), MuJoCo131 is required.
-Simply install it the same way as MuJoCo200.
-These environments make use of the module `rand_param_envs` which is submoduled in this repository.
-Add the module to your python path, `export PYTHONPATH=./rand_param_envs:$PYTHONPATH`
-(Check out [direnv](https://direnv.net/) for handy directory-dependent path managenement.)
+#### Create the conda environment
+1. Execute `conda config --set restore_free_channel true`, details see [here](https://github.com/katerakelly/oyster/issues/16)
+2. Create our environment with `conda env create -f docker/environment.yml`  
+   This installation has been tested on 64-bit Ubuntu 18.04.
+3. To make use of the module `rand_param_envs` which is submoduled in this repository:  
+   firstly,install the module to the environment, execute:  
+   `cd rand_param_envs`  
+   `pip install -e .`  
+   Then add the module to the python path as previous procedure.   
+   `export PYTHONPATH=./rand_param_envs:$PYTHONPATH`  
 
-Experiments are configured via `json` configuration files located in `./configs`. To reproduce an experiment, run:
+#### Reproduce the Experiments
+Experiments are configured via `json` configuration files located in `./configs`.   
+To reproduce an experiment, run:  
 `python launch_experiment.py ./configs/[EXP].json`
 
 By default the code will use the GPU - to use CPU instead, set `use_gpu=False` in the appropriate config file.
